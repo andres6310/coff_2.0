@@ -180,6 +180,7 @@ if (!function_exists('limpiarDatos')) {
         <!-- SECCIÓN MEJORES PRODUCTOS -->
         <section class="container top-products">
             <h1 class="heading-1">Mejores Productos</h1>
+            <div id="mensaje-confirmacion" style="margin: 20px 0;"></div>
             <div class="container-options">
                 <span class="active">Destacados</span> <span>Más recientes</span> <span>Mejores Vendidos</span>
             </div>

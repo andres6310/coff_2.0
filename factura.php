@@ -366,7 +366,7 @@ $usuario_info = $result_usuario->fetch_assoc();
     <div class="actions">
         <button class="download-btn" onclick="downloadPDF()">📄 Descargar PDF</button>
         <button class="print-btn" onclick="window.print()">🖨️ Imprimir</button>
-        <button class="download-btn" onclick="window.history.back()">← Volver</button>
+        <button class="download-btn" onclick="window.location.href='./index.php'">← Volver</button>
     </div>
 
   

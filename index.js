@@ -852,7 +852,7 @@ function setupPaypalButton() {
                     }).showToast();
                     return;
                 }
-                
+
                 console.log("✅ Validación del carrito exitosa");
 
                 // Guardar pedido en backend
@@ -933,26 +933,59 @@ function setupPaypalButton() {
                         downloadBtn.textContent = 'Descargar Factura PDF';
                         downloadBtn.style.marginTop = '10px';
                         downloadBtn.style.padding = '10px 20px';
-                        downloadBtn.style.backgroundColor = '#2980b9';
+                        downloadBtn.style.backgroundColor = '#c7a17a';
                         downloadBtn.style.color = 'white';
                         downloadBtn.style.border = 'none';
                         downloadBtn.style.borderRadius = '5px';
                         downloadBtn.style.cursor = 'pointer';
-                        
+
+                       // Estilos para ubicar el botón en la esquina inferior izquierda
+                        downloadBtn.style.position = 'fixed';
+                        downloadBtn.style.bottom = '20px';
+                        downloadBtn.style.left = '20px';   // Cambiado de 'right' a 'left'
+                        downloadBtn.style.zIndex = '9999';
+
+                        // Función para remover el botón después de 15 segundos
+                        function removeDownloadBtn() {
+                            if (downloadBtn.parentNode) {
+                                downloadBtn.parentNode.removeChild(downloadBtn);
+                                console.log("⏳ Botón de descarga removido después de tiempo");
+                            }
+                        }
+                            
+                        // ⏳ Ocultar automáticamente después de 15 segundos
+                        setTimeout(removeDownloadBtn, 7000); // 7000 ms = 7 segundos
+
                         downloadBtn.addEventListener('click', () => {
                             const facturaUrl = `factura.php?pedido_id=${pedidoId}`;
                             console.log("📄 Abriendo factura en:", facturaUrl);
                             window.open(facturaUrl, '_blank');
+                            removeDownloadBtn();
                         });
 
-                        const paypalContainer = document.getElementById('paypal-button-container');
-                        if (paypalContainer) {
-                            paypalContainer.innerHTML = '';
-                            paypalContainer.appendChild(downloadBtn);
-                            console.log("✅ Botón de descarga añadido al DOM");
-                        } else {
-                            console.error("❌ No se pudo encontrar el contenedor PayPal para añadir el botón");
-                        }
+                        // Insertar el botón en el contenedor del carrito visible en el header
+                        const carritoContainer = document.querySelector('.content-shopping-cart');
+                        if (carritoContainer) {
+                            // Crear un contenedor para el botón para mejor control de estilos
+                            let downloadBtnContainer = document.getElementById('download-btn-container');
+                            if (!downloadBtnContainer) {
+                                downloadBtnContainer = document.createElement('div');
+                                downloadBtnContainer.id = 'download-btn-container';
+                            downloadBtnContainer.style.display = 'inline-block';
+                            downloadBtnContainer.style.marginLeft = '10px';
+                            downloadBtnContainer.style.verticalAlign = 'middle';
+                            downloadBtnContainer.style.height = '40px'; // altura similar a btn-login
+                            downloadBtnContainer.style.display = 'flex';
+                            downloadBtnContainer.style.alignItems = 'center';
+                            downloadBtnContainer.style.justifyContent = 'center';
+                            downloadBtnContainer.style.marginTop = '0';
+                            downloadBtnContainer.style.marginBottom = '0';
+                            downloadBtnContainer.style.padding = '0';
+                            carritoContainer.appendChild(downloadBtnContainer);
+                            }
+                            downloadBtnContainer.innerHTML = '';
+                            downloadBtnContainer.appendChild(downloadBtn);
+                            console.log("✅ Botón de descarga añadido al DOM junto al carrito");
                     } else {
                         console.error("❌ ERROR AL GUARDAR PEDIDO:");
                         console.error("- Success:", data.success, "->", isSuccess);
@@ -971,7 +1004,7 @@ function setupPaypalButton() {
                             style: { background: '#dc3545' } 
                         }).showToast();
                     }
-                })
+                }})
                 .catch((error) => {
                     console.error("🚨 ERROR CRÍTICO EN FETCH:");
                     console.error("- Tipo de error:", error.constructor.name);
@@ -1190,12 +1223,37 @@ function procesarCompra() {
             // Limpiar carrito
             limpiarCarrito(); // Tu función existente
             
-            // Redireccionar a la factura
-            if (data.redirect_to_invoice && data.factura_url) {
-                window.location.href = data.factura_url;
+            // Mostrar botón "Ver factura" en lugar de redirigir automáticamente
+            const mensajeConfirmacion = document.getElementById('mensaje-confirmacion');
+            if (mensajeConfirmacion) {
+                mensajeConfirmacion.innerHTML = ''; // Limpiar contenido
+                
+                const verFacturaBtn = document.createElement('button');
+                verFacturaBtn.textContent = 'Ver factura';
+                verFacturaBtn.style.marginTop = '10px';
+                verFacturaBtn.style.padding = '10px 20px';
+                verFacturaBtn.style.backgroundColor = '#2980b9';
+                verFacturaBtn.style.color = 'white';
+                verFacturaBtn.style.border = 'none';
+                verFacturaBtn.style.borderRadius = '5px';
+                verFacturaBtn.style.cursor = 'pointer';
+                
+                verFacturaBtn.addEventListener('click', () => {
+                    if (data.factura_url) {
+                        window.location.href = data.factura_url;
+                    } else {
+                        window.location.href = `factura.php?pedido_id=${data.pedido_id}&auto=1`;
+                    }
+                });
+                
+                mensajeConfirmacion.appendChild(verFacturaBtn);
             } else {
-                // Fallback: construir URL manualmente
-                window.location.href = `factura.php?pedido_id=${data.pedido_id}&auto=1`;
+                // Si no existe el contenedor, hacer la redirección como fallback
+                if (data.redirect_to_invoice && data.factura_url) {
+                    window.location.href = data.factura_url;
+                } else {
+                    window.location.href = `factura.php?pedido_id=${data.pedido_id}&auto=1`;
+                }
             }
         } else {
             // Mostrar error
