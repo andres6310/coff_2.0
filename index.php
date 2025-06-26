@@ -606,7 +606,7 @@ if (!function_exists('limpiarDatos')) {
     <script src="./index.js"></script> 
     
   <!-- Chatbot de Voiceflow -->
- <script type="text/javascript">
+<script type="text/javascript">
   (function(d, t) {
       var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
       v.onload = function() {
