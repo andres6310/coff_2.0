@@ -86,7 +86,7 @@ if (!function_exists('limpiarDatos')) {
     <header>
         <div class="container-hero">
             <div class="container hero">
-                <img src="img/icono.png" alt="Logo" class="logo1-img" />
+                <img src="img/icono.png.png" alt="Logo" class="logo1-img" />
                 <div class="container-logo">
                     <i class="fa-solid fa-mug-hot"></i>
                     <h1 class="logo"><a href="/">Coffee Galactic</a></h1>
@@ -605,13 +605,13 @@ if (!function_exists('limpiarDatos')) {
 
     <script src="./index.js"></script> 
     
-   <!-- Chatbot de Voiceflow -->
-       <script type="text/javascript">
+  <!-- Chatbot de Voiceflow -->
+ <script type="text/javascript">
   (function(d, t) {
       var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
       v.onload = function() {
         window.voiceflow.chat.load({
-          verify: { projectID: '682ced09264d2fe8aeffab8a' },
+          verify: { projectID: '685c4944d000f98992e44e56' },
           url: 'https://general-runtime.voiceflow.com',
           versionID: 'production',
           voice: {

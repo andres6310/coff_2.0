@@ -371,83 +371,19 @@ $usuario_info = $result_usuario->fetch_assoc();
 
   
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
         function downloadPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            // Configuración del documento
-            doc.setFontSize(20);
-            doc.setTextColor(139, 69, 19); // Color café
-            doc.text('☕ Coffee Galactic', 20, 20);
-            
-            doc.setFontSize(16);
-            doc.setTextColor(0, 0, 0);
-            doc.text('FACTURA DE COMPRA', 20, 35);
-            
-            // Línea separadora
-            doc.setLineWidth(0.5);
-            doc.line(20, 40, 190, 40);
-            
-            // Información del cliente y factura
-            doc.setFontSize(12);
-            doc.text('Información del Cliente:', 20, 55);
-            doc.text('Cliente ID: <?php echo $usuario_id; ?>', 20, 65);
-            <?php if ($usuario_info && $usuario_info['nombre']): ?>
-            doc.text('Nombre: <?php echo addslashes($usuario_info['nombre']); ?>', 20, 75);
-            <?php endif; ?>
-            
-            doc.text('Detalles de Factura:', 120, 55);
-            doc.text('Factura #: <?php echo str_pad($pedido_id, 6, '0', STR_PAD_LEFT); ?>', 120, 65);
-            doc.text('Pedido ID: <?php echo $pedido_id; ?>', 120, 75);
-            doc.text('Fecha: <?php echo date('d/m/Y H:i', strtotime($pedido['fecha_pedido'])); ?>', 120, 85);
-            doc.text('Estado: <?php echo ucfirst($pedido['estado']); ?>', 120, 95);
-            
-            // Tabla de productos
-            doc.setFontSize(10);
-            
-            // Encabezados de tabla
-            doc.setFillColor(139, 69, 19);
-            doc.setTextColor(255, 255, 255);
-            doc.rect(20, 110, 170, 10, 'F');
-            doc.text('Producto', 25, 117);
-            doc.text('Cant.', 90, 117);
-            doc.text('Precio Unit.', 115, 117);
-            doc.text('Subtotal', 155, 117);
-            
-            // Datos de los productos
-            doc.setTextColor(0, 0, 0);
-            let yPosition = 120;
-            
-            <?php foreach ($detalles as $index => $detalle): ?>
-            doc.rect(20, <?php echo $index; ?> * 10 + 120, 170, 10);
-            doc.text('<?php echo addslashes($detalle['producto_nombre'] ?? 'Producto ID: ' . $detalle['producto_id']); ?>', 25, <?php echo $index; ?> * 10 + 127);
-            doc.text('<?php echo $detalle['cantidad']; ?>', 95, <?php echo $index; ?> * 10 + 127);
-            doc.text('$<?php echo number_format($detalle['precio_unitario'], 2); ?>', 120, <?php echo $index; ?> * 10 + 127);
-            doc.text('$<?php echo number_format($detalle['cantidad'] * $detalle['precio_unitario'], 2); ?>', 160, <?php echo $index; ?> * 10 + 127);
-            <?php endforeach; ?>
-            
-            // Total
-            const totalY = <?php echo count($detalles); ?> * 10 + 140;
-            doc.setFontSize(12);
-            doc.setFont(undefined, 'bold');
-            doc.setFillColor(139, 69, 19);
-            doc.setTextColor(255, 255, 255);
-            doc.rect(120, totalY, 70, 10, 'F');
-            doc.text('TOTAL A PAGAR', 125, totalY + 7);
-            doc.setTextColor(0, 0, 0);
-            doc.rect(120, totalY + 10, 70, 10);
-            doc.text('$<?php echo number_format($pedido['total'], 2); ?>', 155, totalY + 17);
-            
-            // Footer
-            doc.setFontSize(10);
-            doc.setFont(undefined, 'italic');
-            doc.setTextColor(100, 100, 100);
-            doc.text('Coffee Galactic - Gracias por su compra', 105, 250, null, null, 'center');
-            doc.text('Esta factura fue generada el <?php echo date('d/m/Y \a \l\a\s H:i'); ?>', 105, 260, null, null, 'center');
-            
-            // Descargar el PDF
-            doc.save('Factura_Pedido_<?php echo $pedido_id; ?>.pdf');
+            const element = document.getElementById('invoice');
+            const opt = {
+                margin:       0.5,
+                filename:     'Factura_Pedido_<?php echo $pedido_id; ?>.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            // Usar html2pdf para convertir el div con id 'invoice' a PDF
+            html2pdf().set(opt).from(element).save();
         }
         
         // Auto-mostrar la factura si viene desde una compra
@@ -459,6 +395,7 @@ $usuario_info = $result_usuario->fetch_assoc();
             }
         });
     </script>
+    
     
 
 </body>

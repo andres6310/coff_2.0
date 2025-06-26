@@ -141,9 +141,9 @@ html {
 .btn-login:hover { 
     background-color: #a07e58;
  }
-.logo1-img { width: 6rem;
-     height: 6rem; 
-     object-fit: cover;
+.logo1-img { width: 8rem;
+     height: 8rem; 
+     object-fit: contain;
       border-radius: 5rem; 
     }
 
